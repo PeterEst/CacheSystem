@@ -1,5 +1,6 @@
 package Cache;
 
+import Utils.GeneralUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -64,12 +65,30 @@ public class LazyCacheTest {
     public void get_ValueInCache_ReturnsValue() {
         String key = "key";
         String value = "value";
+        long timeToLive = 1000L;
+        long expiryTime = System.currentTimeMillis() + timeToLive;
 
-        cacheMap.put(key, new CacheEntry(value, System.currentTimeMillis() + 1000));
+        cacheMap.put(key, new CacheEntry(value, expiryTime));
 
         Optional<Object> cachedValue = lazyCache.get(key);
 
         Assertions.assertTrue(cachedValue.isPresent());
         Assertions.assertEquals(Optional.of(value), cachedValue);
+    }
+
+    @Test
+    public void get_ValueExpired_ReturnsEmptyOptional() {
+        String key = "key";
+        String value = "value";
+        long timeToLive = 1000L;
+        long expiryTime = System.currentTimeMillis() + timeToLive;
+
+        cacheMap.put(key, new CacheEntry(value, expiryTime));
+
+        GeneralUtils.wait(1000);
+
+        Optional<Object> cachedValue = lazyCache.get(key);
+
+        Assertions.assertFalse(cachedValue.isPresent());
     }
 }
