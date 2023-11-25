@@ -18,6 +18,11 @@ class CacheEntry implements CacheEntryInterface {
     }
 
     @Override
+    public boolean hasExpired() {
+        return System.currentTimeMillis() > expirationTimestamp;
+    }
+
+    @Override
     public String toString() {
         return "CacheEntry{" + "value=" + value + ", expirationTimestamp=" + expirationTimestamp + '}';
     }

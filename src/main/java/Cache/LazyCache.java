@@ -68,11 +68,13 @@ public class LazyCache implements CacheInterface {
     public void put(String key, Object value, long timeToLive) {
         // Cleanup the cache before adding a new value.
         cachingStrategy.cleanup(cacheMap);
-        cachingStrategy.updateAccessOrder(key);
 
         // Generating a new CacheEntry and adding it to the cache.
         CacheEntry cacheEntry = new CacheEntry(value, System.currentTimeMillis() + timeToLive);
         cacheMap.put(key, cacheEntry);
+
+        // Update the access order of the key.
+        cachingStrategy.updateAccessOrder(key);
     }
 
     /**
@@ -95,11 +97,13 @@ public class LazyCache implements CacheInterface {
 
         // If the key is not present in the cache, return an empty Optional.
         if (cacheEntry == null) {
+            // Remove the key from the caching strategy.
+            cachingStrategy.remove(key);
             return Optional.empty();
         }
 
         // If the key is present in the cache, but the value has expired, remove the key from the cache and return an empty Optional.
-        if (cacheEntry.getExpirationTimestamp() < System.currentTimeMillis()) {
+        if (cacheEntry.hasExpired()) {
             this.remove(key);
             return Optional.empty();
         }

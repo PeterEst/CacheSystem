@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.Optional;
 
@@ -13,18 +12,13 @@ public class LazyCacheTest {
     private LazyCache lazyCache;
     Map<String, CacheEntryInterface> cacheMap;
 
-    private Map<String, CacheEntryInterface> getCacheMap() throws NoSuchFieldException, IllegalAccessException {
-        Field cacheMapField = LazyCache.class.getDeclaredField("cacheMap");
-        cacheMapField.setAccessible(true);
-        return (Map<String, CacheEntryInterface>) cacheMapField.get(lazyCache);
-    }
-
     @BeforeEach
     public void setUp() throws NoSuchFieldException, IllegalAccessException {
+        // Initialize LazyCache
         lazyCache = new LazyCache();
-        Field cacheMapField = LazyCache.class.getDeclaredField("cacheMap");
-        cacheMapField.setAccessible(true);
-        cacheMap = getCacheMap();
+
+        // Get cacheMap
+        cacheMap = CacheTestsHelper.getPrivateCacheMap(lazyCache);
     }
 
     @Test
@@ -90,5 +84,37 @@ public class LazyCacheTest {
         Optional<Object> cachedValue = lazyCache.get(key);
 
         Assertions.assertFalse(cachedValue.isPresent());
+    }
+
+    @Test
+    public void get_KeyNotFound_ReturnsEmptyOptional() {
+        String key = "key";
+
+        Optional<Object> cachedValue = lazyCache.get(key);
+
+        Assertions.assertFalse(cachedValue.isPresent());
+    }
+
+    @Test
+    public void remove_ValueRemoved_ReturnsEmptyOptional() {
+        String key = "key";
+        String value = "value";
+        long timeToLive = 1000L;
+        long expiryTime = System.currentTimeMillis() + timeToLive;
+
+        cacheMap.put(key, new CacheEntry(value, expiryTime));
+
+        lazyCache.remove(key);
+
+        Assertions.assertFalse(cacheMap.containsKey(key));
+    }
+
+    @Test
+    public void remove_KeyNotFound_ReturnsEmptyOptional() {
+        String key = "key";
+
+        lazyCache.remove(key);
+
+        Assertions.assertFalse(cacheMap.containsKey(key));
     }
 }
