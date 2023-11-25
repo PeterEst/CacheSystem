@@ -1,7 +1,7 @@
 package Cache;
 
 
-import Cache.CachingStrategy.CachingStrategyInterface;
+import Cache.CachingStrategy.CachingStrategy;
 import Cache.CachingStrategy.LRUCachingStrategy;
 
 import java.util.Map;
@@ -14,7 +14,7 @@ public class LazyCache implements CacheInterface {
 
     private final Map<String, CacheEntryInterface> cacheMap;
     private final long defaultTimeToLive;
-    private final CachingStrategyInterface cachingStrategy;
+    private final CachingStrategy cachingStrategy;
 
     public LazyCache() {
         this(DEFAULT_TIME_TO_LIVE, new LRUCachingStrategy(DEFAULT_MAX_CACHE_SIZE));
@@ -28,7 +28,7 @@ public class LazyCache implements CacheInterface {
         this(DEFAULT_TIME_TO_LIVE, new LRUCachingStrategy(maxCacheSize));
     }
 
-    public LazyCache(CachingStrategyInterface cachingStrategy) {
+    public LazyCache(CachingStrategy cachingStrategy) {
         this(DEFAULT_TIME_TO_LIVE, cachingStrategy);
     }
 
@@ -36,7 +36,7 @@ public class LazyCache implements CacheInterface {
         this(defaultTimeToLive, new LRUCachingStrategy(maxCacheSize));
     }
 
-    public LazyCache(long defaultTimeToLive, CachingStrategyInterface cachingStrategy) {
+    public LazyCache(long defaultTimeToLive, CachingStrategy cachingStrategy) {
         this.cacheMap = new ConcurrentHashMap<>();
         this.defaultTimeToLive = defaultTimeToLive;
         this.cachingStrategy = cachingStrategy;

@@ -2,18 +2,11 @@ package Cache.CachingStrategy;
 
 import Cache.CacheEntryInterface;
 
-import java.util.Deque;
-import java.util.LinkedList;
 import java.util.Map;
 
-public class LRUCachingStrategy implements CachingStrategyInterface {
-    private final Deque<String> accessOrder;
-    private final int maxCacheSize;
-
-
+public class LRUCachingStrategy extends CachingStrategy {
     public LRUCachingStrategy(int maxCacheSize) {
-        this.accessOrder = new LinkedList<>();
-        this.maxCacheSize = maxCacheSize;
+        super(maxCacheSize);
     }
 
     @Override

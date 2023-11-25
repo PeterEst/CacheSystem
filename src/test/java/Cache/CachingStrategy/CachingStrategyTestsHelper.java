@@ -8,10 +8,10 @@ import java.util.Map;
 
 public class CachingStrategyTestsHelper {
     @SuppressWarnings("unchecked")
-    static Deque<String> getPrivateAccessOrder(CachingStrategyInterface mruCachingStrategy) throws NoSuchFieldException, IllegalAccessException {
-        Field accessOrderField = MRUCachingStrategy.class.getDeclaredField("accessOrder");
+    static Deque<String> getPrivateAccessOrder(CachingStrategy cachingStrategy) throws NoSuchFieldException, IllegalAccessException {
+        Field accessOrderField = CachingStrategy.class.getDeclaredField("accessOrder");
         accessOrderField.setAccessible(true);
-        return (Deque<String>) accessOrderField.get(mruCachingStrategy);
+        return (Deque<String>) accessOrderField.get(cachingStrategy);
     }
 
     static void fillAccessOrder(Deque<String> accessOrder, Map<String, CacheEntryInterface> map) {
