@@ -31,10 +31,10 @@ public class LRUCachingStrategyTest {
         Map<String, CacheEntryInterface> cacheMap = new HashMap<>();
 
         // Add entries to cacheMap
-        cacheMap.put("key1", CacheTestsHelper.createCacheEntry("value1"));
-        cacheMap.put("key2", CacheTestsHelper.createCacheEntry("value2"));
-        cacheMap.put("key3", CacheTestsHelper.createCacheEntry("value3"));
-        cacheMap.put("key4", CacheTestsHelper.createCacheEntry("value4"));
+        cacheMap.put("1", CacheTestsHelper.createCacheEntry("value1"));
+        cacheMap.put("2", CacheTestsHelper.createCacheEntry("value2"));
+        cacheMap.put("3", CacheTestsHelper.createCacheEntry("value3"));
+        cacheMap.put("4", CacheTestsHelper.createCacheEntry("value4"));
 
         // Fill accessOrder
         CachingStrategyTestsHelper.fillAccessOrder(accessOrder, cacheMap);
@@ -43,7 +43,7 @@ public class LRUCachingStrategyTest {
         lruCachingStrategy.cleanup(cacheMap);
 
         // Check if least recently used key is removed
-        Assertions.assertFalse(cacheMap.containsKey("key1"));
+        Assertions.assertFalse(cacheMap.containsKey("1"));
     }
 
     @Test
@@ -51,19 +51,19 @@ public class LRUCachingStrategyTest {
         Map<String, CacheEntryInterface> cacheMap = new HashMap<>();
 
         // Add entries to cacheMap
-        cacheMap.put("key1", CacheTestsHelper.createCacheEntry("value1"));
-        cacheMap.put("key2", CacheTestsHelper.createCacheEntry("value2"));
+        cacheMap.put("1", CacheTestsHelper.createCacheEntry("value1"));
+        cacheMap.put("2", CacheTestsHelper.createCacheEntry("value2"));
 
         // Fill accessOrder
         CachingStrategyTestsHelper.fillAccessOrder(accessOrder, cacheMap);
 
         // Invoke updateAccessOrder
-        lruCachingStrategy.updateAccessOrder("key1");
+        lruCachingStrategy.updateAccessOrder("1");
 
         // Check if key1 is moved to the front
         LinkedList<String> expectedOrder = new LinkedList<>();
-        expectedOrder.addFirst("key1");
-        expectedOrder.addLast("key2");
+        expectedOrder.addFirst("1");
+        expectedOrder.addLast("2");
 
         Assertions.assertEquals(expectedOrder, new LinkedList<>(accessOrder));
     }
@@ -73,18 +73,18 @@ public class LRUCachingStrategyTest {
         Map<String, CacheEntryInterface> cacheMap = new HashMap<>();
 
         // Add entries to cacheMap
-        cacheMap.put("key1", CacheTestsHelper.createCacheEntry("value1"));
-        cacheMap.put("key2", CacheTestsHelper.createCacheEntry("value2"));
+        cacheMap.put("1", CacheTestsHelper.createCacheEntry("value1"));
+        cacheMap.put("2", CacheTestsHelper.createCacheEntry("value2"));
 
         // Add entries to accessOrder
         CachingStrategyTestsHelper.fillAccessOrder(accessOrder, cacheMap);
 
         // Invoke remove
-        lruCachingStrategy.remove("key1");
+        lruCachingStrategy.remove("1");
 
         // Check if key1 is removed from access order
         LinkedList<String> expectedOrder = new LinkedList<>();
-        expectedOrder.addLast("key2");
+        expectedOrder.addLast("2");
 
         Assertions.assertEquals(expectedOrder, new LinkedList<>(accessOrder));
     }
