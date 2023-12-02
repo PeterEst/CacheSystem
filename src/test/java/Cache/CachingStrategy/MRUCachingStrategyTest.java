@@ -13,11 +13,13 @@ import java.util.Map;
 public class MRUCachingStrategyTest {
     private MRUCachingStrategy mruCachingStrategy;
     private Deque<String> accessOrder;
+    private static final int MAX_CACHE_SIZE = 3;
+
 
     @BeforeEach
     public void setUp() throws NoSuchFieldException, IllegalAccessException {
-        mruCachingStrategy = new MRUCachingStrategy(3);
-        accessOrder = CachingStrategyTestsHelper.getPrivateAccessOrder(mruCachingStrategy);
+        mruCachingStrategy = new MRUCachingStrategy(MAX_CACHE_SIZE);
+        accessOrder = CachingStrategyTestsHelper.getMRUPrivateAccessOrder(mruCachingStrategy);
     }
 
     @Test
@@ -67,7 +69,7 @@ public class MRUCachingStrategyTest {
     }
 
     @Test
-    public void updateAccessOrder_KeyExists_ShouldMoveKeyToFirst() {
+    public void updateCacheState_KeyExists_ShouldMoveKeyToFirst() {
         Map<String, CacheEntryInterface> cacheMap = new HashMap<>();
 
         // Add entries to cacheMap
@@ -77,8 +79,8 @@ public class MRUCachingStrategyTest {
         // Fill accessOrder
         CachingStrategyTestsHelper.fillAccessOrder(accessOrder, cacheMap);
 
-        // Invoke updateAccessOrder
-        mruCachingStrategy.updateAccessOrder("key1");
+        // Invoke updateCacheState
+        mruCachingStrategy.updateCacheState("key1");
 
         // Check if key1 is moved to first
         Assertions.assertEquals("key1", accessOrder.getFirst());

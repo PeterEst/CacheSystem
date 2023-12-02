@@ -16,14 +16,15 @@ public class LRUCachingStrategyTest {
 
     private LRUCachingStrategy lruCachingStrategy;
     private Deque<String> accessOrder;
+    private static final int MAX_CACHE_SIZE = 3;
 
     @BeforeEach
     public void setUp() throws NoSuchFieldException, IllegalAccessException {
         // Initialize with a max size of 3 for testing purposes
-        lruCachingStrategy = new LRUCachingStrategy(3);
+        lruCachingStrategy = new LRUCachingStrategy(MAX_CACHE_SIZE);
 
         // Get accessOrder
-        accessOrder = CachingStrategyTestsHelper.getPrivateAccessOrder(lruCachingStrategy);
+        accessOrder = CachingStrategyTestsHelper.getLRUPrivateAccessOrder(lruCachingStrategy);
     }
 
     @Test
@@ -47,7 +48,7 @@ public class LRUCachingStrategyTest {
     }
 
     @Test
-    public void updateAccessOrder_KeyExists_ShouldMoveKeyToFirst() {
+    public void updateCacheState_KeyExists_ShouldMoveKeyToFirst() {
         Map<String, CacheEntryInterface> cacheMap = new HashMap<>();
 
         // Add entries to cacheMap
@@ -57,8 +58,8 @@ public class LRUCachingStrategyTest {
         // Fill accessOrder
         CachingStrategyTestsHelper.fillAccessOrder(accessOrder, cacheMap);
 
-        // Invoke updateAccessOrder
-        lruCachingStrategy.updateAccessOrder("1");
+        // Invoke updateCacheState
+        lruCachingStrategy.updateCacheState("1");
 
         // Check if key1 is moved to the front
         LinkedList<String> expectedOrder = new LinkedList<>();
