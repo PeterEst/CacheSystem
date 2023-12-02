@@ -1,6 +1,5 @@
 package Cache;
 
-import Utils.GeneralUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -71,7 +70,7 @@ public class LazyCacheTest {
     }
 
     @Test
-    public void get_ValueExpired_ReturnsEmptyOptional() {
+    public void get_ValueExpired_ReturnsEmptyOptional() throws InterruptedException {
         String key = "key";
         String value = "value";
         long timeToLive = 1000L;
@@ -79,7 +78,7 @@ public class LazyCacheTest {
 
         cacheMap.put(key, new CacheEntry(value, expiryTime));
 
-        GeneralUtils.wait(1000);
+        Thread.sleep(1000);
 
         Optional<Object> cachedValue = lazyCache.get(key);
 

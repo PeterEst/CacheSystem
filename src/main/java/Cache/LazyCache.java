@@ -66,15 +66,15 @@ public class LazyCache implements CacheInterface {
      */
     @Override
     public void put(String key, Object value, long timeToLive) {
-        // Cleanup the cache before adding a new value.
-        cachingStrategy.cleanup(cacheMap);
-
         // Generating a new CacheEntry and adding it to the cache.
         CacheEntry cacheEntry = new CacheEntry(value, System.currentTimeMillis() + timeToLive);
         cacheMap.put(key, cacheEntry);
 
+        // Cleanup the cache.
+        cachingStrategy.cleanup(cacheMap);
+
         // Update the access order of the key.
-        cachingStrategy.updateAccessOrder(key);
+        cachingStrategy.updateCacheState(key);
     }
 
     /**
@@ -89,9 +89,6 @@ public class LazyCache implements CacheInterface {
      */
     @Override
     public Optional<Object> get(String key) {
-        // Cleanup the cache before retrieving the value.
-        cachingStrategy.cleanup(cacheMap);
-
         // Get the CacheEntry from the cache.
         CacheEntryInterface cacheEntry = cacheMap.get(key);
 
